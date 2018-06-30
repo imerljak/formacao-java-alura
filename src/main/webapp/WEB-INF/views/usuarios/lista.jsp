@@ -10,20 +10,23 @@
 
     <section id="index-section" class="container middle">
 
+        <a href="${s:mvcUrl('UC#form').build()}"><fmt:message key="navegacao.usuarios.novo"/></a>
+
+        <h1><fmt:message key="views.usuarios.lista"/></h1>
+
         <c:if test="${not empty message}">
             <p>
                 <fmt:message key="${message}"/>
             </p>
         </c:if>
 
-        <a href="${s:mvcUrl('UC#form').build()}"><fmt:message key="navegacao.usuarios.novo"/></a>
-
-        <h1><fmt:message key="views.usuarios.lista"/></h1>
         <table>
             <thead>
             <tr>
                 <th><fmt:message key="lists.usuarios.nome"/></th>
                 <th><fmt:message key="lists.usuarios.email"/></th>
+                <th><fmt:message key="lists.usuarios.roles"/></th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -31,6 +34,12 @@
                 <tr>
                     <td>${usuario.nome}</td>
                     <td>${usuario.email}</td>
+                    <td>${usuario.roles}</td>
+                    <td>
+                        <a href="${s:mvcUrl("UC#editar").arg(0, usuario.email).build()}">
+                            Editar
+                        </a>
+                    </td>
                 </tr>
             </c:forEach>
             </tbody>

@@ -1,22 +1,22 @@
 package br.com.casadocodigo.loja.validation;
 
 import br.com.casadocodigo.loja.dao.UsuarioDAO;
-import br.com.casadocodigo.loja.models.UsuarioFormModel;
+import br.com.casadocodigo.loja.models.Usuario;
 import org.springframework.validation.Errors;
 import org.springframework.validation.ValidationUtils;
 import org.springframework.validation.Validator;
 
-public class UsuarioFormModelValidation implements Validator {
+public class UsuarioValidator implements Validator {
 
     private UsuarioDAO usuarioDAO;
 
-    public UsuarioFormModelValidation(UsuarioDAO usuarioDAO) {
+    public UsuarioValidator(UsuarioDAO usuarioDAO) {
         this.usuarioDAO = usuarioDAO;
     }
 
     @Override
     public boolean supports(Class<?> aClass) {
-        return UsuarioFormModel.class.isAssignableFrom(aClass);
+        return Usuario.class.isAssignableFrom(aClass);
     }
 
     @Override
@@ -26,19 +26,19 @@ public class UsuarioFormModelValidation implements Validator {
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "senha", "field.required");
         ValidationUtils.rejectIfEmptyOrWhitespace(errors, "confirmaSenha", "field.required");
 
-        UsuarioFormModel ufm = (UsuarioFormModel) o;
-        if (ufm.getSenha() != null) {
-            if (ufm.getSenha().length() < 5) {
+        Usuario u = (Usuario) o;
+        if (u.getSenha() != null) {
+            if (u.getSenha().length() < 5) {
                 errors.rejectValue("senha", "field.length.password");
             }
 
-            if (!ufm.getSenha().equals(ufm.getConfirmaSenha())) {
+            if (!u.getSenha().equals(u.getConfirmaSenha())) {
                 errors.rejectValue("senha", "field.mismatch.password");
                 errors.rejectValue("confirmaSenha", "field.mismatch.password");
             }
         }
 
-        if (usuarioDAO.findByEmail(ufm.getEmail()).isPresent()) {
+        if (usuarioDAO.findByEmail(u.getEmail()).isPresent()) {
             errors.rejectValue("email", "field.unique.email");
         }
 

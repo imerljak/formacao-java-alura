@@ -1,9 +1,9 @@
 package br.com.casadocodigo.loja.models;
 
+import org.springframework.security.core.GrantedAuthority;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
-
-import org.springframework.security.core.GrantedAuthority;
 
 @Entity
 public class Role implements GrantedAuthority{
@@ -31,5 +31,10 @@ public class Role implements GrantedAuthority{
 	@Override
 	public String getAuthority() {
 		return this.nome;
+	}
+
+	@Override
+	public String toString() {
+		return nome;
 	}
 }
