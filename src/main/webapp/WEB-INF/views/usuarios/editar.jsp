@@ -10,8 +10,19 @@
 
     <section id="index-section" class="container middle">
 
-        <h1><fmt:message key="views.usuarios.cadastro"/></h1>
+        <h1>
+            <fmt:message key="views.usuarios.permissoes">
+                <fmt:param value="${usuario.nome}" />
+            </fmt:message>
+        </h1>
         <form:form action="${s:mvcUrl('UC#editar').build()}" method="POST" commandName="usuario">
+            <div class="form-group">
+                <form:hidden path="email"/>
+                <label><fmt:message key="forms.usuarios.permissoes"/></label>
+                <ul style="list-style: none">
+                    <form:checkboxes path="roles" items="${roles}" element="li"/>
+                </ul>
+            </div>
             <button type="submit"><fmt:message key="forms.atualizar"/></button>
         </form:form>
 

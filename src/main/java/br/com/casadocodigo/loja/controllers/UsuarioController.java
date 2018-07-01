@@ -1,5 +1,6 @@
 package br.com.casadocodigo.loja.controllers;
 
+import br.com.casadocodigo.loja.dao.RoleDAO;
 import br.com.casadocodigo.loja.dao.UsuarioDAO;
 import br.com.casadocodigo.loja.models.Usuario;
 import br.com.casadocodigo.loja.validation.UsuarioValidator;
@@ -19,27 +20,46 @@ import java.util.Optional;
 public class UsuarioController {
 
     private final UsuarioDAO usuarioDAO;
+    private final RoleDAO roleDAO;
 
     @Autowired
-    public UsuarioController(UsuarioDAO usuarioDAO) {this.usuarioDAO = usuarioDAO;}
+    public UsuarioController(UsuarioDAO usuarioDAO, RoleDAO roleDAO) {
+        this.usuarioDAO = usuarioDAO;
+        this.roleDAO = roleDAO;
+    }
 
-    @InitBinder
+    @InitBinder(value = {"usuarioModel"})
     public void initBinder(WebDataBinder binder) {
         binder.addValidators(new UsuarioValidator(usuarioDAO));
+    }
+
+    @RequestMapping(value = "/editar", method = RequestMethod.POST)
+    public ModelAndView atualizarUsuario(@ModelAttribute Usuario usuario, RedirectAttributes redirectAttributes) {
+
+        System.out.println("Email: " + usuario.getEmail());
+
+        // replaceAll() pra tirar uma virgula que surgiu do nada no envio do form junto do email..
+        Optional<Usuario> optional = usuarioDAO.findByEmail(usuario.getEmail().replaceAll(",", ""));
+
+        if (optional.isPresent()) {
+            Usuario u = optional.get();
+            u.setRoles(usuario.getRoles());
+            usuarioDAO.atualizar(u);
+        }
+
+        redirectAttributes.addFlashAttribute("message", "messages.user.updated-permissions");
+        return new ModelAndView("redirect:/usuarios");
     }
 
     @RequestMapping(value = "/editar", method = RequestMethod.GET)
     public ModelAndView editar(@RequestParam String email, RedirectAttributes redirectAttributes) {
 
-        System.out.println("UsuarioController.editar");
-        System.out.println("email = " + email);
-
         Optional<Usuario> usuario = usuarioDAO.findByEmail(email);
-        System.out.println("usuario = " + usuario);
 
         if (usuario.isPresent()) {
             return new ModelAndView("usuarios/editar")
-                    .addObject("usuario", usuario.get());
+                    .addObject("usuario", usuario.get())
+                    .addObject("roles", roleDAO.listar());
         }
 
         redirectAttributes.addFlashAttribute("message", "messages.inexistent.user");

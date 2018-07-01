@@ -54,4 +54,8 @@ public class UsuarioDAO implements UserDetailsService {
         return manager.createQuery("SELECT u FROM Usuario u", Usuario.class)
                 .getResultList();
     }
+
+    public void atualizar(Usuario u) {
+        manager.merge(u);
+    }
 }

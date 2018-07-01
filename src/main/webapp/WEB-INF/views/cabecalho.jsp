@@ -35,7 +35,7 @@
 						    </a>
 						</li>
 					<security:authorize access="isAuthenticated()">
-				      	 <li><a href="<c:url value="/logout" />">Sair</a></li>
+				      	 <li><a href="<c:url value="/logout" />"><fmt:message key="menu.sair"/></a></li>
 				    </security:authorize>
 					</ul>
 				</nav>
