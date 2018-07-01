@@ -38,7 +38,14 @@ public class UsuarioController {
 
         System.out.println("Email: " + usuario.getEmail());
 
-        // replaceAll() pra tirar uma virgula que surgiu do nada no envio do form junto do email..
+        /*
+            Algum bug fantasma fez com que o valor do email do usuário vindo do formulário de Roles
+            viesse com uma vírgula no inicio. ex: ",email@mail.com.br", fazendo com que o usuário não
+            fosse encontrado para atualizar na base.
+
+            O valor na view era populado corretamente, no entanto ao chegar no Controller tinha essa virgula,
+            para 'corrigir' isto, adicionei um replaceAll() removendo qualquer virgula do valor de email.
+         */
         Optional<Usuario> optional = usuarioDAO.findByEmail(usuario.getEmail().replaceAll(",", ""));
 
         if (optional.isPresent()) {
